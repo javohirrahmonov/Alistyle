@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.db.models import Sum, Avg
+from django.shortcuts import render, redirect
 from django.views import View
 from .models import *
+from userapp.models import Account
+
 
 class Home(View):
     def get(self,request):
@@ -29,7 +32,23 @@ class HammaBolimView(View):
 
 class BittaMahsulotView(View):
     def get(self,request,son):
+        izohlar = Izoh.objects.filter(mahsulot__id = son)
+        ortachasi= izohlar.aggregate(Avg('baho')).get('baho__avg')
+        if ortachasi is None:
+            ortachasi = 0
         content = {
-            "mahsulot" :Mahsulot.objects.get(id=son)
+            "mahsulot" :Mahsulot.objects.get(id=son),
+            "izohlar" : izohlar,
+            'izoh_soni' :len(izohlar),
+            "ortachasi" : int(ortachasi*20)
         }
         return render(request,'page-detail-product.html',content)
+
+    def post(self,request,son):
+        Izoh.objects.create(
+            matn = request.POST.get('comment'),
+            baho = request.POST.get('rating'),
+            mahsulot = Mahsulot.objects.get(id=son),
+            account = Account.objects.get(user=request.user)
+        )
+        return redirect(f"/asosiy/mahsulot/{son}/")
