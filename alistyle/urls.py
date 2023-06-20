@@ -8,5 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('asosiy/', include('asosiy.urls')),
     path('userapp/', include('userapp.urls')),
+    path('buyurtma/', include('buyurtma.urls')),
     path('', HomeLoginsiz.as_view(), name='home-loginsiz'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

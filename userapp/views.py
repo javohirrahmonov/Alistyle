@@ -41,6 +41,10 @@ class LoginView(View):
         return redirect("home")
 
 class Logout_view(View):
-        def get(self,request):
-            logout(request)
-            return redirect("/")
+    def get(self,request):
+        logout(request)
+        return redirect("/")
+
+
+
+
